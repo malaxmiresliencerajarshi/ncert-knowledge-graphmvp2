@@ -4,10 +4,10 @@ from streamlit_agraph import agraph, Node, Edge, Config
 
 st.set_page_config(layout="wide", page_title="The NCERT Knowledge Graph")
 
-# 1. THE DATA
+# 1. THE DATA (Paste your ChatGPT JSON here)
 raw_json = '''
 [
-[
+  [
   { "source": "Force", "target": "Motion & Force", "relation": "is_part_of", "grade": "7" },
   { "source": "Motion", "target": "Motion & Force", "relation": "is_part_of", "grade": "7" },
   { "source": "Speed", "target": "Motion & Force", "relation": "connects_to", "grade": "7" },
@@ -92,42 +92,42 @@ nodes = []
 edges = []
 nodes_added = set()
 
-# Color Coding by Grade
+# Color Coding
 grade_colors = {"6": "#FFD700", "7": "#FF8C00", "8": "#FF4500"}
-hub_color = "#1E90FF" # Professional Blue for the Topic Hubs
+hub_color = "#1E90FF" 
 
 for item in data:
-    source = item["source"]
-    target = item["target"]
-    
+    # Use .get() to avoid errors if a key is missing
+    source_node = item.get("source")
+    target_node = item.get("target")
+    grade = item.get("grade", "7") 
+    rel = item.get("relation", "is_part_of")
+
     # Add Source Node (The Concept)
-    if source not in nodes_added:
-        # If it's a concept, make it smaller
-        nodes.append(Node(id=source, label=source, size=15, color=grade_colors.get(item["grade"], "#6495ED")))
-        nodes_added.add(source)
+    if source_node not in nodes_added:
+        nodes.append(Node(id=source_node, 
+                          label=source_node, 
+                          size=15, 
+                          color=grade_colors.get(grade, "#6495ED")))
+        nodes_added.add(source_node)
     
     # Add Target Node (The Hub)
-    if target not in nodes_added:
-        # If it's a Hub (Target), make it BIG and a different color
-        nodes.append(Node(id=target, label=target, size=35, color=hub_color, shape="diamond"))
-        nodes_added.add(target)
+    if target_node not in nodes_added:
+        nodes.append(Node(id=target_node, 
+                          label=target_node, 
+                          size=35, 
+                          color=hub_color, 
+                          shape="diamond"))
+        nodes_added.add(target_node)
         
     # Create the connection
-    edges.append(Edge(source=source, target=target, label=item["relation"]))
+    edges.append(Edge(source=source_node, target=target_node, label=rel))
 
 # 3. THE UI
 st.title("🌌 The NCERT Knowledge Graph")
 st.write("A Galaxy View of Science: Explore how Class 7 and 8 concepts orbit central scientific themes.")
 
-# Visualization Config
-config = Config(
-    width=1000, 
-    height=800, 
-    directed=True, 
-    physics=True, # This creates the "Galaxy" movement
-    hierarchical=False # Keeps it in a cluster/galaxy style
-)
+config = Config(width=1000, height=800, directed=True, physics=True, hierarchical=False)
 
+# This line renders the graph
 agraph(nodes=nodes, edges=edges, config=config)
-
-st.info("💡 **Tip:** Scroll to zoom. Drag the 'Hubs' to reorganize your galaxy!")
