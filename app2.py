@@ -105,17 +105,19 @@ st.subheader("Galaxy Model: Conceptual Hubs & Links")
 st.sidebar.write(f"📊 Nodes: {len(nodes)}")
 st.sidebar.write(f"🔗 Edges: {len(edges)}")
 
-# SAFE CONFIG
+# 1. Update the Config (Clean version for 0.0.45)
 config = Config(
     width=900, 
     height=700, 
     directed=True, 
-    physics=True, # Turn this off if it still doesn't load
+    physics=True, 
     hierarchical=False,
     nodeHighlightBehavior=True,
     highlightColor="#F7A7A6",
     collapsible=True
 )
 
-# KEY FIX: The key="galaxy" is mandatory for some Streamlit versions
-agraph(nodes=nodes, edges=edges, config=config, key="galaxy_view")
+# 2. Update the agraph call (REMOVED the key argument)
+agraph(nodes=nodes, 
+       edges=edges, 
+       config=config)
