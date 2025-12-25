@@ -96,33 +96,35 @@ nodes_added = set()
 grade_colors = {"6": "#FFD700", "7": "#FF8C00", "8": "#FF4500"}
 hub_color = "#1E90FF" 
 
+# We loop through the list 'data'
 for item in data:
-    # Use .get() to avoid errors if a key is missing
-    source_node = item.get("source")
-    target_node = item.get("target")
-    grade = item.get("grade", "7") 
-    rel = item.get("relation", "is_part_of")
+    # We ensure 'item' is a dictionary before calling .get()
+    if isinstance(item, dict):
+        source_node = item.get("source")
+        target_node = item.get("target")
+        grade = str(item.get("grade", "7")) # Convert to string just in case
+        rel = item.get("relation", "is_part_of")
 
-    # Add Source Node (The Concept)
-    if source_node not in nodes_added:
-        nodes.append(Node(id=source_node, 
-                          label=source_node, 
-                          size=15, 
-                          color=grade_colors.get(grade, "#6495ED")))
-        nodes_added.add(source_node)
-    
-    # Add Target Node (The Hub)
-    if target_node not in nodes_added:
-        nodes.append(Node(id=target_node, 
-                          label=target_node, 
-                          size=35, 
-                          color=hub_color, 
-                          shape="diamond"))
-        nodes_added.add(target_node)
+        # Add Source Node (The Concept)
+        if source_node and source_node not in nodes_added:
+            nodes.append(Node(id=source_node, 
+                              label=source_node, 
+                              size=15, 
+                              color=grade_colors.get(grade, "#6495ED")))
+            nodes_added.add(source_node)
         
-    # Create the connection
-    edges.append(Edge(source=source_node, target=target_node, label=rel))
-
+        # Add Target Node (The Hub)
+        if target_node and target_node not in nodes_added:
+            nodes.append(Node(id=target_node, 
+                              label=target_node, 
+                              size=35, 
+                              color=hub_color, 
+                              shape="diamond"))
+            nodes_added.add(target_node)
+            
+        # Create the connection
+        if source_node and target_node:
+            edges.append(Edge(source=source_node, target=target_node, label=rel))
 # 3. THE UI
 st.title("🌌 The NCERT Knowledge Graph")
 st.write("A Galaxy View of Science: Explore how Class 7 and 8 concepts orbit central scientific themes.")
