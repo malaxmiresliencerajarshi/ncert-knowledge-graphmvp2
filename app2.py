@@ -129,7 +129,13 @@ for item in data:
 st.title("🌌 The NCERT Knowledge Graph")
 st.write("A Galaxy View of Science: Explore how Class 7 and 8 concepts orbit central scientific themes.")
 
-config = Config(width=1000, height=800, directed=True, physics=True, hierarchical=False)
+config = Config(width=1000, 
+                height=800, 
+                directed=True, 
+                physics=True, 
+                hierarchical=False,
+                collapsible=True # This lets you "shrink" hubs by clicking them
+                )
 
 # This line renders the graph
 agraph(nodes=nodes, edges=edges, config=config)
